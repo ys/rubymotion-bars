@@ -22,6 +22,13 @@ class Bar
   def self.closest(lat, lon)
     error_ptr = Pointer.new(:object)
     data = NSData.alloc.initWithContentsOfURL(NSURL.URLWithString((buildUrl(lat, lon))), options:NSDataReadingUncached, error:error_ptr)
+    #bars_file = NSBundle.mainBundle.pathForResource('offline_bars', ofType:'json')
+    #errorPointer = Pointer.new(:object)
+    #data = NSData.alloc.initWithContentsOfFile(bars_file, options:NSDataReadingUncached, error:errorPointer)
+    #unless data
+    #  printError errorPointer[0]
+    #  return defaultAnswers
+    #end
     json = BubbleWrap::JSON.parse(data)
     json[:response][:venues].map do |bar_json|
       Bar.new(bar_json)
