@@ -10,7 +10,8 @@ class BarListController < UITableViewController
   end
 
   def viewWillAppear(animated)
-    navigationController.setNavigationBarHidden(true, animated:true)
+    navigationController.setNavigationBarHidden(false, animated:true)
+    navigationItem.title = "I NEED BOOZE"
     @location_manager ||= CLLocationManager.alloc.init.tap do |lm|
       lm.desiredAccuracy = KCLLocationAccuracyNearestTenMeters
       lm.startUpdatingLocation
@@ -38,7 +39,15 @@ class BarListController < UITableViewController
     return cell
   end
 
+  def tableView(tableView, didSelectRowAtIndexPath:indexPath)
+    showMeTheWayToTheNextWhiskyBar(indexPath)
+  end
+
   def tableView(tableView, accessoryButtonTappedForRowWithIndexPath:indexPath)
+    showMeTheWayToTheNextWhiskyBar(indexPath)
+  end
+
+  def showMeTheWayToTheNextWhiskyBar(indexPath)
     bar = @bars[indexPath.row]
     controller = UIApplication.sharedApplication.delegate.bar_details_controller
     navigationController.pushViewController(controller, animated:true)
@@ -47,7 +56,6 @@ class BarListController < UITableViewController
 
   def locationManager(manager, didUpdateToLocation:newLocation, fromLocation:oldLocation)
     @location_manager.stopUpdatingLocation
-    # view with newLocation
     @bars = Bar.closest(newLocation.coordinate.latitude, newLocation.coordinate.longitude)
     view.reloadData
   end
